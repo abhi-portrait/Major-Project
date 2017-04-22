@@ -1,0 +1,7 @@
+<form action="{% url 'index' %}" method="post">
+  {% csrf_token %}
+Year - <input type="text" name="year" />
+<br>
+Country - <input type="text" name="country"  />
+<input type="submit" name="submit"   />
+</form>
