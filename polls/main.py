@@ -16,17 +16,18 @@ from faSETS import fasets
 #     password = getpass("Enter password of MySQL Database:     ")
 #     dbName = raw_input("Enter the name of the database:     ")
 #     return username,password,dbName
+# year = ""
+# country = ""
 
-def takeUserInputs():
-    # print
-    # print
-    # print
-    # print
-    year = "2011"
-    country = "india"
-    return year,country
+# def takeUserInputs(Year,Country):
+#     # print
+#     # print
+#     # print
+#     # print
+#     year = Year
+#     country = Country
 
-def main():
+def main(Year,Country):
     username = "root"
     password = ""
     dbName = "Terrorism"
@@ -42,7 +43,9 @@ def main():
     if cursor == None:
         print("There is an error")
     else:
-        year,country = takeUserInputs()
+        # year,country = takeUserInputs("2011","india")
+        year = Year
+        country = Country
         handler = sqlHandler()
         mainQuery = handler.makeCountQueryForTwoAttribute(tableName,mainAttribute1,country,mainAttribute2,year)
         mainQueryCount = handler.getCount(cursor,mainQuery)

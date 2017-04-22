@@ -1,4 +1,13 @@
-<table border="2">
+<table border="6">
+  {% for i in queryList %}
+  <tr>
+    {% for j in i %}
+    <td>{{ j }}</td>
+    {% endfor %}
+  <tr>
+    {% endfor %}
+<table>
+<table border="2" align="right">
   {% for i in finalList %}
   <tr>
     {% for j in i %}
@@ -7,3 +16,12 @@
   <tr>
     {% endfor %}
 <table>
+  <table border="4" align="left">
+    {% for i in finalTwoFasetList %}
+    <tr>
+      {% for j in i %}
+      <td>{{ j }}</td>
+      {% endfor %}
+    <tr>
+      {% endfor %}
+  <table>

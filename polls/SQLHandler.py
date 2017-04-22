@@ -5,7 +5,7 @@ import MySQLdb
 from dbConnect import Connect
 
 class sqlHandler:
-
+    queryResultList = list()
     def makeQuery(self,tableName,attribute,attributeVal):
         s = "SELECT COUNT(*) FROM " + tableName + " where " + attribute + " = '" + attributeVal + "'"
         return s
@@ -14,13 +14,23 @@ class sqlHandler:
         try:
             cursor.execute(query)
             results = cursor.fetchall()
+            tempList = list()
+            tempList.append(attribute1)
+            tempList.append(attribute2)
+            tempList.append(attribute3)
+            self.queryResultList.append(tempList)
             # print "     *****************************************************************************************"
             # print "     [ " + attribute1 + "," + attribute2 + "," + attribute3 + " ]"
             # print "     *****************************************************************************************"
             for i in results:
+                tList = list()
                 a = i[0]
                 b = i[1]
                 c = i[2]
+                tList.append(a)
+                tList.append(b)
+                tList.append(c)
+                self.queryResultList.append(tList)
                 # print "     [ " + a + "," + b + "," + c + " ]"
         except:
             print ("There was an error in retrieving data")
