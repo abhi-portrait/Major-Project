@@ -10,6 +10,7 @@
 <table border="2" align="right">
   {% for i in finalList %}
   <tr>
+    <td><button id="tr{{forloop.counter}}">-></button></td>
     {% for j in i %}
     <td>{{ j }}</td>
     {% endfor %}
@@ -19,6 +20,7 @@
   <table border="4" align="left">
     {% for i in finalTwoFasetList %}
     <tr>
+      <td><button id="tr{{forloop.counter}}">-></button></td>
       {% for j in i %}
       <td>{{ j }}</td>
       {% endfor %}

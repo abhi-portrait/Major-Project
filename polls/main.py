@@ -26,7 +26,7 @@ from faSETS import fasets
 #     # print
 #     year = Year
 #     country = Country
-
+# initialQueryResultList = list()
 def main(Year,Country):
     username = "root"
     password = ""

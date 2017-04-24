@@ -12,6 +12,7 @@ class sqlHandler:
 
     def showResults(self,cursor,query,attribute1,attribute2,attribute3):
         try:
+            self.queryResultList.clear()
             cursor.execute(query)
             results = cursor.fetchall()
             tempList = list()
@@ -31,6 +32,7 @@ class sqlHandler:
                 tList.append(b)
                 tList.append(c)
                 self.queryResultList.append(tList)
+            # return queryResultList
                 # print "     [ " + a + "," + b + "," + c + " ]"
         except:
             print ("There was an error in retrieving data")

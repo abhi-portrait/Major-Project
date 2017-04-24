@@ -11,10 +11,6 @@ from django.shortcuts import render
 
 def index(request):
     # print(request.method)
-
-    #     print(year)
-    #     print(country)
-    #     return HttpResponse('kldcblkndlkc')
     template = loader.get_template('polls/userQuery.html')
     return render(request, 'polls/userQuery.html')
 
@@ -27,14 +23,9 @@ def recommend(request):
     finalList = list()
     queryList = list()
     finalTwoFasetList = list()
-
-    #  finalTwoList = list()
-    # main.takeUserInputs(year,country)
     finalList = main.main(year,country)
     finalTwoFasetList = mfaset.takeUserInputs(year,country)
     queryList = sqlHandler.queryResultList
-    # n = len(finalList)
-    # m = len(finalList[0])
-    #  finalTwoList = addOnToMain.listTwoFaset
-
+    # if finalList[0][0]=="U" or finalTwoFasetList[0][0]=="U":
+    #     return HttpResponse('Data not available in database')
     return render(request, 'polls/recommendations.html', {'finalList':finalList,'queryList': queryList,'finalTwoFasetList':finalTwoFasetList})

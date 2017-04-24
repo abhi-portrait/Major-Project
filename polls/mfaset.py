@@ -35,6 +35,10 @@ def makeQuery(attribute1,attributeVal1,attribute2,attributeVal2):
 
 def giveScoreSortedList(someList,totalCount,mainQueryCount):
 
+    if totalCount == 0 or mainQueryCount == 0:
+        sortedTwoFacetList = list()
+        sortedTwoFacetList.append("Unable to fetch data")
+        return sortedTwoFacetList
     for i in range(0,9):
         num = someList[i][4] / (mainQueryCount * 1.0)
         denomNum = getCount(makeQuery(someList[i][0],someList[i][2],someList[i][1],someList[i][3]))
@@ -70,8 +74,12 @@ def giveTopResultsList(attribute,year,country):
     return listType
 
 def  initialTwoFacetList(attackList,cityList,targetList):
+
     anyList = list()
     initialList = list()
+    if len(attackList)<3 or len(cityList)<3 or len(targetList)<3 :
+        initialList.append("Unable to fetch data")
+        return initialList
 
     anyList.append(attackList[0])
     anyList.append(cityList[0])
@@ -162,7 +170,8 @@ def generateTopResultsForRestAttributes(mainQueryCount,totalCount,year,country):
     targetList = giveTopResultsList(attribute3,year,country)
 
     initialListWithoutFrequency = initialTwoFacetList(attackList,cityList,targetList)
-
+    if initialListWithoutFrequency[0]=="Unable to fetch data":
+        return initialListWithoutFrequency
     initialListWithFrequency = giveTopResultsListWithFrequency(initialListWithoutFrequency,year,country)
     twoFasetList = giveScoreSortedList(initialListWithFrequency,totalCount,mainQueryCount)
     return twoFasetList
@@ -173,7 +182,7 @@ def generateTopResultsForRestAttributes(mainQueryCount,totalCount,year,country):
 
 
 def takeUserInputs(year,country):
-    query = "SELECT count(*) from attacks where iyear = " + "'" + year + "'" + " and country_txt = " + "'" + country + "'"
+    query = "SELECT count(*) from attacks where " + mainAttribute1 + " ='" + country + "'  and " + mainAttribute2 + " ='" + year + "' "
     mainQueryCount = getCount(query)
     totalCount = getCount("SELECT count(*) from attacks")
     return generateTopResultsForRestAttributes(mainQueryCount,totalCount,year,country)

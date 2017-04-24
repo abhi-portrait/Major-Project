@@ -92,5 +92,5 @@ class fasets:
         #self.showDicts(typeOneDict,typeTwoDict,typeThreeDict)
         scores = self.calculateScores(cursor,handler,tableName,mainQueryCount,totalCount,typeOneDict,typeTwoDict,typeThreeDict,attribute1,attribute2,attribute3)
         self.maintainFinalList(scores,oneFasetList)
-        oneFasetList = sorted(oneFasetList,key = operator.itemgetter(2))
+        oneFasetList = sorted(oneFasetList,key = operator.itemgetter(2),reverse = True)
         return oneFasetList
