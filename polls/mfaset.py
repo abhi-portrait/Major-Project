@@ -39,15 +39,16 @@ def giveScoreSortedList(someList,totalCount,mainQueryCount):
         sortedTwoFacetList = list()
         sortedTwoFacetList.append("Unable to fetch data")
         return sortedTwoFacetList
-    for i in range(0,9):
-        num = someList[i][4] / (mainQueryCount * 1.0)
+    someListLen = len(someList)
+    for i in range(0,someListLen):
+        num = someList[i][4] / (6 * 1.0)
         denomNum = getCount(makeQuery(someList[i][0],someList[i][2],someList[i][1],someList[i][3]))
         denom = denomNum / (totalCount * 1.0)
         if denom != 0:
             score = num / (denom * 1.0)
             someList[i].append(score)
     tempList = list()
-    for i in range(0,9):
+    for i in range(0,someListLen):
         if someList[i][4] != 0:
             tempList.append(someList[i])
     sortedTwoFacetList = sorted(tempList,key=itemgetter(5),reverse = True)
@@ -75,81 +76,51 @@ def giveTopResultsList(attribute,year,country):
 
 def  initialTwoFacetList(attackList,cityList,targetList):
 
-    anyList = list()
+
     initialList = list()
-    if len(attackList)<3 or len(cityList)<3 or len(targetList)<3 :
-        initialList.append("Unable to fetch data")
-        return initialList
+    # if len(attackList)<3 or len(cityList)<3 or len(targetList)<3 :
+    #     initialList.append("Unable to fetch data")
+    #     return initialList
+    attr1Len = len(attackList)
+    attr2Len = len(cityList)
+    attr3Len = len(targetList)
 
-    anyList.append(attackList[0])
-    anyList.append(cityList[0])
-    anyList.append(attackList[1])
-    anyList.append(cityList[1])
-    initialList.append(anyList)
+    for i in range(0,attr1Len,2):
+        for j in range(0,attr2Len,2):
+            anyList = list()
+            anyList.append(attackList[i])
+            anyList.append(cityList[j])
+            anyList.append(attackList[i+1])
+            anyList.append(cityList[j+1])
+            initialList.append(anyList)
 
-    bList = list()
-    bList.append(cityList[0])
-    bList.append(targetList[0])
-    bList.append(cityList[1])
-    bList.append(targetList[1])
-    initialList.append(bList)
+    for i in range(0,attr1Len,2):
+        for j in range(0,3,2):
+            anyList = list()
+            anyList.append(attackList[i])
+            anyList.append(targetList[j])
+            anyList.append(attackList[i+1])
+            anyList.append(targetList[j+1])
+            initialList.append(anyList)
 
-    cList = list()
-    cList.append(attackList[0])
-    cList.append(targetList[0])
-    cList.append(attackList[1])
-    cList.append(targetList[1])
-    initialList.append(cList)
+    for i in range(0,attr2Len,2):
+        for j in range(0,attr3Len,2):
+            anyList = list()
+            anyList.append(cityList[i])
+            anyList.append(targetList[j])
+            anyList.append(cityList[i+1])
+            anyList.append(targetList[j+1])
+            initialList.append(anyList)
 
-    dList = list()
-    dList.append(attackList[0])
-    dList.append(cityList[2])
-    dList.append(attackList[1])
-    dList.append(cityList[3])
-    initialList.append(dList)
-
-    eList = list()
-    eList.append(attackList[0])
-    eList.append(targetList[2])
-    eList.append(attackList[1])
-    eList.append(targetList[3])
-    initialList.append(eList)
-
-    fList = list()
-    fList.append(cityList[0])
-    fList.append(targetList[2])
-    fList.append(cityList[1])
-    fList.append(targetList[3])
-    initialList.append(fList)
-
-    gList = list()
-    gList.append(cityList[0])
-    gList.append(attackList[2])
-    gList.append(cityList[1])
-    gList.append(attackList[3])
-    initialList.append(gList)
-
-    hList = list()
-    hList.append(targetList[0])
-    hList.append(attackList[2])
-    hList.append(targetList[1])
-    hList.append(attackList[3])
-    initialList.append(hList)
-
-    iList = list()
-    iList.append(targetList[0])
-    iList.append(cityList[2])
-    iList.append(targetList[1])
-    iList.append(cityList[3])
-    initialList.append(iList)
-
+    if len(initialList)>16:
+        del initialList[16:]
     return initialList
 
 def giveTopResultsListWithFrequency(initList,year,country):
     db = MySQLdb.connect("127.0.0.1","root","","Terrorism")
     cursor = db.cursor()
-
-    for i in range(0,9):
+    initListLen = len(initList)
+    for i in range(0,initListLen):
         query  = "SELECT  count(*) as Frequency FROM attacks where " + mainAttribute1 + " ='" + country + "'  and " + mainAttribute2 + " ='" + year + "' and "+ initList[i][0] +" = '" + initList[i][2] + "' and " + initList[i][1] + " = '" + initList[i][3] + "' "
 
         try:

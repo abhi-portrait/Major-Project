@@ -39,6 +39,8 @@ class fasets:
     #     self.printDicts(dict3)
 
     def giveScoreDict(self,cursor,handler,tableName,mainQueryCount,totalCount,anyDict,attribute):
+        print('mainquerycount')
+        print(mainQueryCount)
         someDict = dict()
         for i in anyDict:
             num = anyDict[i] / (mainQueryCount * 1.0)
@@ -62,7 +64,7 @@ class fasets:
         typeOneScoreDict = self.giveScoreDict(cursor,handler,tableName,mainQueryCount,totalCount,typeOneDict,attribute1)
         typeTwoScoreDict = self.giveScoreDict(cursor,handler,tableName,mainQueryCount,totalCount,typeTwoDict,attribute2)
         typeThreeScoreDict = self.giveScoreDict(cursor,handler,tableName,mainQueryCount,totalCount,typeThreeDict,attribute3)
-        oneFasetList = list()
+
         sortedScores = self.sortScores(typeOneScoreDict,typeTwoScoreDict,typeThreeScoreDict)
         return sortedScores
 
@@ -80,6 +82,42 @@ class fasets:
                 if tupple[0] == parameter:
                     aList.append(tupple[1])
                     break
+
+    def giveTopResultsDictWithOneMainAttribute(self,cursor,tableName,attribute,mainAttribute1,mainAttribute1Val):
+        query = "SELECT " + attribute + " , COUNT(*) as Frequency FROM " + tableName + " where " + mainAttribute1 + " = " + "'" + mainAttribute1Val + "'" + " GROUP BY " + attribute + " ORDER BY COUNT(*) DESC LIMIT 5"
+        dictType = dict()
+        try:
+            cursor.execute(query)
+            results = cursor.fetchall()
+            for i in results:
+                key = i[0]
+                val = i[1]
+                if key != "Unknown":
+                    dictType[key] = val
+        except:
+            print ("Unable to print data")
+        return dictType
+
+    def generateTopResultsForThreeAttributesWithOneMainAttribute(self,cursor,handler,tableName,mainQueryCount,totalCount,mainAttribute1,mainAttribute1Val,attribute1,attribute2,attribute3):
+        print('mainquerycount')
+        print(mainQueryCount)
+        typeOneDict = self.giveTopResultsDictWithOneMainAttribute(cursor,tableName,attribute1,mainAttribute1,mainAttribute1Val)
+        typeTwoDict = self.giveTopResultsDictWithOneMainAttribute(cursor,tableName,attribute2,mainAttribute1,mainAttribute1Val)
+        typeThreeDict = self.giveTopResultsDictWithOneMainAttribute(cursor,tableName,attribute3,mainAttribute1,mainAttribute1Val)
+        oneFasetList = list()
+        self.maintainList(oneFasetList,attribute1,typeOneDict)
+        self.maintainList(oneFasetList,attribute2,typeTwoDict)
+        self.maintainList(oneFasetList,attribute3,typeThreeDict)
+        scores = self.calculateScores(cursor,handler,tableName,mainQueryCount,totalCount,typeOneDict,typeTwoDict,typeThreeDict,attribute1,attribute2,attribute3)
+        self.maintainFinalList(scores,oneFasetList)
+        oneFasetList = sorted(oneFasetList,key = operator.itemgetter(2),reverse = True)
+        # print "     1 Faset Recommendations     "
+        # for i in oneFasetList:
+        #     print i
+        return oneFasetList
+
+
+
 
     def generateTopResultsForThreeAttributes(self,cursor,handler,tableName,mainQueryCount,totalCount,mainAttribute1,mainAttribute1Val,mainAttribute2,mainAttribute2Val,attribute1,attribute2,attribute3):
         typeOneDict = self.giveTopResultsDict(cursor,tableName,attribute1,mainAttribute1,mainAttribute1Val,mainAttribute2,mainAttribute2Val)

@@ -1,29 +1,233 @@
-<table border="6">
-  {% for i in queryList %}
-  <tr>
-    {% for j in i %}
-    <td>{{ j }}</td>
-    {% endfor %}
-  <tr>
-    {% endfor %}
-<table>
-<table border="2" align="right">
-  {% for i in finalList %}
-  <tr>
-    <td><button id="tr{{forloop.counter}}">-></button></td>
-    {% for j in i %}
-    <td>{{ j }}</td>
-    {% endfor %}
-  <tr>
-    {% endfor %}
-<table>
-  <table border="4" align="left">
-    {% for i in finalTwoFasetList %}
-    <tr>
-      <td><button id="tr{{forloop.counter}}">-></button></td>
-      {% for j in i %}
-      <td>{{ j }}</td>
-      {% endfor %}
-    <tr>
-      {% endfor %}
-  <table>
+{% extends 'base.html' %}
+{% block title %}
+  <title>Recommendations</title>
+  <style>
+    body {
+      padding: 0px;
+      margin: 0px;
+      background-color: #34495e;
+      color: white;
+      /*overflow-y: hidden;*/
+      /*overflow-x: hidden;*/
+    }
+    section {
+      width : 100%;
+      height: auto;
+    }
+    table {
+      border: 2px solid #2c3e50;
+      padding: 20px;
+      margin: 0px auto;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .table_description {
+      width: 100%;
+      text-align: center;
+      height: 25px;
+      padding: 5px;
+      background-color: #2c3e50;
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    button {
+      height: 30px;
+      width: 30px;
+      border: none;
+      color: white;
+      background-color: #2c3e50;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #parentSection {
+      height: auto;
+      width: 100%;
+    }
+
+  </style>
+{% endblock %}
+{% block content %}
+<input id = "csrf_value" type = 'hidden' value = "{{ csrf_token }}" />
+<section id = 'parentSection'>
+  <section id = 'initalQuerySection'>
+    <div class = 'table_description' id = ''>Initial Query Result</div>
+    <table>
+      {% for i in queryList %}
+      <tr>
+        {% for j in i %}
+        <td>{{ j }}</td>
+        {% endfor %}
+      <tr>
+        {% endfor %}
+    </table>
+  </section>
+
+  <section id = 'oneFasetSection'>
+    <div class = 'table_description' id = ''>One Faset recommendations</div>
+    <table>
+      {% for i in finalList %}
+      <tr id = "1facet_tr_{{ forloop.counter }}">
+        <td><button id="trone{{forloop.counter}}" class = 'subButton'>-></button></td>
+        {% for j in i %}
+        <td>{{ j }}</td>
+        {% endfor %}
+      <tr>
+        {% endfor %}
+    </table>
+  </section>
+
+  <section id = 'twoFasetSection'>
+    <div class = 'table_description' id = ''>Two Faset recommendations</div>
+    <table>
+      {% for i in finalTwoFasetList %}
+      <tr id = "2facet_tr_{{ forloop.counter }}">
+        <td><button type="submit"  id="trtwo{{forloop.counter}}" class="subButton" >-></button></td>
+        {% for j in i %}
+        <td>{{ j }}</td>
+        {% endfor %}
+      <tr>
+        {% endfor %}
+    </table>
+  </section>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script>
+  (function($, w, d, $w, $d) {
+
+    var subButton = $('.subButton'),
+        csrf_value = $('#csrf_value').val(),
+        initalQuerySection = $('#initalQuerySection'),
+        oneFasetSection = $('#oneFasetSection'),
+        twoFasetSection = $('#twoFasetSection'),
+        loader = $('#loaderSection');
+
+
+    _Functions = {
+      populateDataInDOM : function(data) {
+
+        loader.css('display', 'none');
+
+        initalQuerySection.empty();
+        oneFasetSection.empty();
+        twoFasetSection.empty();
+
+        var finalList = data['finalList'],
+            queryList = data['queryList'],
+            finalTwoFasetList = data['finalTwoFasetList'];
+
+        var finalListTable = "<table>";
+        for(var i = 0; i < finalList.length; i++) {
+          finalListTable += "<tr>";
+          finalListTable += "<td><button id='trone"+ i + 1 + "' class='subButton' >-></button></td><td>"+ finalList[i][0] +"</td><td>"+ finalList[i][1] +"</td><td>"+ finalList[i][2] +"</td>";
+          finalListTable += "</tr>";
+        }
+        finalListTable += "</table>";
+
+        var queryListTable = "<table>";
+        for(var i = 0; i < queryList.length; i++) {
+          queryListTable += "<tr>";
+          queryListTable += "<td>"+ queryList[i][0] +"</td><td>"+ queryList[i][1] +"</td><td>"+ queryList[i][2] +"</td>";
+          queryListTable += "</tr>";
+        }
+        queryListTable += "</table>";
+
+        var finalTwoFasetListTable = "<table>";
+        for(var i = 0; i < finalTwoFasetList.length; i++) {
+          finalTwoFasetListTable += "<tr>";
+          finalTwoFasetListTable += "<td><button id='trtwo"+ i + 1 + "' class='subButton' >-></button></td><td>"+ finalTwoFasetList[i][0] +"</td><td>"+ finalTwoFasetList[i][1] +"</td><td>"+ finalTwoFasetList[i][2] +"</td><td>"+ finalTwoFasetList[i][3] +"</td>";
+          finalTwoFasetListTable += "</tr>";
+        }
+        finalTwoFasetListTable += "</table>";
+
+        $('#initalQuerySection').append(queryListTable);
+        $('#oneFasetSection').append(finalListTable);
+        $('#twoFasetSection').append(finalTwoFasetListTable);
+
+        var butArr = document.getElementsByClassName('subButton');
+        for(var i = 0; i < butArr.length; i++) {
+          butArr[i].addEventListener('click', function() {
+            loader.css('display', 'block');
+            var reqArr = [];
+            // console.log(this.id);
+            var id = this.id;
+            var dataArr = $('#' + id).parent().parent().children()
+            for(var i = 1; i < dataArr.length; i++) {
+              var node = dataArr[i];
+              var val = $(node).text();
+              reqArr.push(val);
+            }
+            console.log(reqArr);
+
+            var postData = {
+              'id' : id,
+              'arr' : JSON.stringify(reqArr),
+              'csrfmiddlewaretoken' : csrf_value
+            }
+
+            console.log(postData);
+
+            $.ajax({
+              url : 'http://127.0.0.1:8000/polls/second_recommend/',
+              type : 'POST',
+              data : postData,
+              success : function(data) {
+                console.log(data);
+                jsonData = JSON.parse(data)
+                console.log(jsonData)
+                _Functions.populateDataInDOM(jsonData);
+              },
+              error : function(err) {
+                console.log(err);
+              }
+            })
+          });
+        }
+      }
+    }
+
+    // console.log(csrf_value);
+    $('.subButton').on('click', function(e) {
+      loader.css('display', 'block');
+      var reqArr = [];
+      // console.log(this.id);
+      var id = this.id;
+      var dataArr = $('#' + id).parent().parent().children()
+      for(var i = 1; i < dataArr.length; i++) {
+        var node = dataArr[i];
+        var val = $(node).text();
+        reqArr.push(val);
+      }
+      console.log(reqArr);
+
+      var postData = {
+        'id' : id,
+        'arr' : JSON.stringify(reqArr),
+        'csrfmiddlewaretoken' : csrf_value
+      }
+
+      console.log(postData);
+
+      $.ajax({
+        url : 'http://127.0.0.1:8000/polls/second_recommend/',
+        type : 'POST',
+        data : postData,
+        success : function(data) {
+          console.log(data);
+          jsonData = JSON.parse(data)
+          console.log(jsonData)
+          _Functions.populateDataInDOM(jsonData);
+        },
+        error : function(err) {
+          console.log(err);
+        }
+      })
+
+    });
+
+  })(jQuery, window, document, jQuery(window), jQuery(document));
+</script>
+{% endblock %}

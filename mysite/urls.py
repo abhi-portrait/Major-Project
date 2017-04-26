@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from polls.views import index
-from polls.views import recommend
+from polls.views import index, recommend, second_recommend
 
 urlpatterns = [
     url(r'^$', index, name='index'),
-    url(r'^polls/', recommend, name = 'recommend'),
+    url(r'^polls/$', recommend, name = 'recommend'),
+    url(r'^polls/second_recommend/', second_recommend, name = 'second_recommend'),
     url(r'^admin/', admin.site.urls),
 ]

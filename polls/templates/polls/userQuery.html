@@ -1,7 +1,81 @@
-<form action="{% url 'recommend' %}" method="post">
-  {% csrf_token %}
-Year - <input type="text" name="year" />
-<br>
-Country - <input type="text" name="country"  />
-<input type="submit" name="submit"   />
-</form>
+{% extends 'base.html' %}
+{% block title %}
+  <title>Demo</title>
+  <style>
+
+    body {
+      background-color: #3498db;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .details_form {
+      text-align: center;
+      width: 100%;
+      position: relative;
+      top:40%;
+    }
+
+    .submit {
+      height: 32px;
+      width: 90px;
+      font-size: 12px;
+      background-color: #2980b9;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      color: white;
+      font-weight: 600;
+    }
+
+    .type_field {
+      height: 35px;
+      width: 220px;
+      font-size: 15px;
+      font-weight: bolder;
+      text-align: center;
+    }
+
+    #message {
+      width: 100%;
+      height: 50px;
+      text-align: center;
+      color: #e74c3c;
+      font-weight: bolder;
+      letter-spacing: 1.5;
+    }
+
+  </style>
+{% endblock %}
+{% block content %}
+  <form onsubmit = "return check_form()" id = 'details_form' class = 'details_form' action="{% url 'recommend' %}" method="post">
+    {% csrf_token %}
+    <input id = 'year_field' class = 'type_field' type="text" name="year" placeholder="Year" /><br/>
+    <input id = 'country_field' class = 'type_field' type="text" name="country" placeholder = "Country"  /><br/>
+    <input type="submit" id = 'subButton' name="submit" class = 'submit' />
+  </form>
+  <div id = 'message'></div>
+  <script>
+    var submitButton = document.getElementById('subButton'),
+        loader = document.getElementById('loaderSection'),
+        year_field = document.getElementById('year_field'),
+        country_field = document.getElementById('country_field'),
+        details_form = document.getElementById('details_form'),
+        message = document.getElementById('message');
+
+    function check_form() {
+      var year = year_field.value,
+          country = country_field.value;
+      if(year == "" || country == "") {
+        console.log(message);
+        message.innerText = "All Fields are required !";
+        return false;
+      }
+      loader.style.display = 'block';
+      return true;
+    }
+    // subButton.addEventListener('click', function() {
+    //   loader.style.display = 'block';
+    // });
+  </script>
+{% endblock %}

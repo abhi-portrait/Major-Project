@@ -41,17 +41,30 @@ class sqlHandler:
     def getTotalCountQuery(self,tableName):
         qry = "SELECT COUNT(*) FROM " + tableName
         return qry
+    def makeCheckQuery(self,tableName,mainAttribute1,mainAttribute1Val,mainAttribute2,mainAttribute2Val):
+        qry = "SELECT COUNT(*) FROM " + tableName + " where " + mainAttribute1 + " = " + "'" + mainAttribute1Val + "'" + " and " + mainAttribute2 + " > 1970 and " + mainAttribute2 + " < 2015 and " + mainAttribute2 + " = " + "'" + mainAttribute2Val + "'"
+        return qry
 
     def makeCountQueryForOneAttribute(self,tableName,attribute,attributeVal):
         qry = "SELECT COUNT(*) FROM " + tableName + " WHERE " + attribute + " = " + "'" + attributeVal + "'"
         return qry
 
     def makeCountQueryForTwoAttribute(self,tableName,attribute1,attribute1Val,attribute2,attribute2Val):
-        qry = "SELECT COUNT(*) FROM " + tableName + " WHERE " + attribute1 + " = " + "'" + attribute1Val + "'" + " and " + attribute2 + " = " + "'" + attribute2Val + "'"
+        if attribute2 == "" and attribute2Val == "":
+            qry = "SELECT COUNT(*) FROM " + tableName + " WHERE " + attribute1 + " = " + "'" + attribute1Val + "'"
+        else:
+            qry = "SELECT COUNT(*) FROM " + tableName + " WHERE " + attribute1 + " = " + "'" + attribute1Val + "'" + " and " + attribute2 + " = " + "'" + attribute2Val + "'"
         return qry
 
-    def makeQueryForTop50ResultsOnMainQueryThreeAttributes(self,tableName,attribute1,attribute2,attribute3,mainAttribute1,mainAttribute1Val,mainAttribute2,mainAttribute2Val):
+    def makeQueryForTop50ResultsOnMainQueryThreeAttributesWithOneMainAttribute(self,tableName,attribute1,attribute2,attribute3,mainAttribute1,mainAttribute1Val):
+        qry = "SELECT " + attribute1 + "," + attribute2 + "," + attribute3 + " from " + tableName + " where " + mainAttribute1 + " = " + "'" + mainAttribute1Val + "'" + " LIMIT 50 "
+        return qry
+
+    def makeQueryForTop50ResultsOnMainQueryThreeAttributesWithTwoMainAttribute(self,tableName,attribute1,attribute2,attribute3,mainAttribute1,mainAttribute1Val,mainAttribute2,mainAttribute2Val):
         qry = "SELECT " + attribute1 + "," + attribute2 + "," + attribute3 + " from " + tableName + " where " + mainAttribute1 + " = " + "'" + mainAttribute1Val + "'" + " and " + mainAttribute2 + " = " + "'" + mainAttribute2Val + "'" + " LIMIT 50 "
+        return qry
+    def makeQueryForTop50ResultsTypeOne(self,tableName,attribute1,attribute2,attribute3,mainAttribute1,mainAttribute1Val):
+        qry = "SELECT " + attribute1 + "," + attribute2 + "," + attribute3 + " from " + tableName + " where " + mainAttribute1 + " = " + "'" + mainAttribute1Val + "'" +  " LIMIT 50 "
         return qry
 
     def getCount(self,cursor,query):
